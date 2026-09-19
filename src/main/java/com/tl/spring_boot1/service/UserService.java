@@ -1,0 +1,25 @@
+package com.tl.spring_boot1.service;
+
+import com.tl.spring_boot1.model.User;
+import com.tl.spring_boot1.dto.users.UserCreateRequest;
+import com.tl.spring_boot1.repository.UserRepository;
+import com.tl.spring_boot1.dto.users.UserResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public UserResponse createUser( UserCreateRequest request){
+        User user = new User();
+        user.setName( request.getName() );
+        user.setAge( request.getAge() );
+        User newUser = userRepository.createUser(user);
+
+        // sending this newly created user object to DTO
+        return UserResponse.from(newUser);
+    }
+}

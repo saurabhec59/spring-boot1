@@ -18,4 +18,8 @@ public class UserRepository {
         return user;
     }
 
+    public User findUserById(int id){
+        return em.find(User.class, id);
+    }
+
 }

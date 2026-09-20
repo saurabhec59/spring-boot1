@@ -14,15 +14,21 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
 
     @PostMapping("/users")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserCreateRequest request){
          UserResponse response =  userService.createUser(request);
          return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserResponse> findUserById(@PathVariable int id){
+        UserResponse response = userService.findUserById(id);
+        if(response == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

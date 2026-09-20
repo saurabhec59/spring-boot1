@@ -22,4 +22,13 @@ public class UserService {
         // sending this newly created user object to DTO
         return UserResponse.from(newUser);
     }
+
+    public UserResponse findUserById(int id){
+        User user =  userRepository.findUserById(id);
+        if(user == null){
+            return null;
+        }
+        UserResponse response = UserResponse.from(user);
+        return response;
+    }
 }

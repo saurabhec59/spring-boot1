@@ -1,5 +1,6 @@
 package com.tl.spring_boot1.controller;
 
+import com.tl.spring_boot1.dto.users.UserPatchRequest;
 import com.tl.spring_boot1.repository.UserRepository;
 import com.tl.spring_boot1.service.UserService;
 import com.tl.spring_boot1.dto.users.UserCreateRequest;
@@ -38,4 +39,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PatchMapping("/users/{id}")
+    public ResponseEntity<UserResponse> patchUser(@PathVariable int id, @Valid @RequestBody UserPatchRequest request){
+        UserResponse response = userService.patchUser(id, request);
+        if(response == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -28,6 +29,12 @@ public class UserController {
         if(response == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> findAllUsers(){
+        List<UserResponse> response = userService.findAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -6,6 +6,8 @@ import com.tl.spring_boot1.repository.UserRepository;
 import com.tl.spring_boot1.dto.users.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -29,6 +31,19 @@ public class UserService {
             return null;
         }
         UserResponse response = UserResponse.from(user);
+        return response;
+    }
+
+    public List<UserResponse> findAllUsers(){
+        List<User> allUsers = userRepository.findAllUsers();
+        /*
+            No need to check null because em.createQuery().getResultList() returns an empty List even in case of if there are nothing to return
+            and does not return null.
+        */
+        List<UserResponse> response = new ArrayList<UserResponse>();
+        for(User user : allUsers){
+            response.add( UserResponse.from(user) );
+        }
         return response;
     }
 }

@@ -84,4 +84,19 @@ public class UserService {
             Hibernate automatically compares the entity's current state to what it originally loaded and issues an UPDATE SQL only for the changed columns.
          */
     }
+
+    @Transactional
+    public boolean deleteUser(int id){
+        /*  first fetch the user itself because em.remove() can't delete directly using 'id'
+            correct JPA pattern and good safety check is to pass a 'managed entity' (which is 'User' here) to em.remove().
+            The returned object 'user' via findUserById() is a managed entity
+         */
+
+        User user = userRepository.findUserById(id);
+        if(user == null){
+            return false;
+        }
+        userRepository.deleteUser(user);
+        return true;
+    }
 }

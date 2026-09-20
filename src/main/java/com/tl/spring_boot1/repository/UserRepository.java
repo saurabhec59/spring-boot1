@@ -27,4 +27,9 @@ public class UserRepository {
         return em.createQuery("SELECT u FROM User u", User.class).getResultList(); // This will return a List<User>
     }
 
+    @Transactional
+    public void deleteUser(User user){
+        em.remove(user);
+    }
+
 }

@@ -26,9 +26,6 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponse> findUserById(@PathVariable int id){
         UserResponse response = userService.findUserById(id);
-        if(response == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -41,18 +38,12 @@ public class UserController {
     @PatchMapping("/users/{id}")
     public ResponseEntity<UserResponse> patchUser(@PathVariable int id, @Valid @RequestBody UserPatchRequest request){
         UserResponse response = userService.patchUser(id, request);
-        if(response == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id){
-        boolean response = userService.deleteUser(id);
-        if(!response){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

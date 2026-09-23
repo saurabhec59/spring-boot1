@@ -1,6 +1,8 @@
 package com.tl.spring_boot1.service;
 
 import com.tl.spring_boot1.dto.users.UserPatchRequest;
+import com.tl.spring_boot1.exception.InvalidUserDataException;
+import com.tl.spring_boot1.exception.UserNotFoundException;
 import com.tl.spring_boot1.model.User;
 import com.tl.spring_boot1.dto.users.UserCreateRequest;
 import com.tl.spring_boot1.repository.UserRepository;
@@ -30,7 +32,7 @@ public class UserService {
     public UserResponse findUserById(int id){
         User user =  userRepository.findById(id).orElse(null); // findById() is a generic method & spring data jpa will implement it internally.
         if(user == null){
-            return null;
+            throw new UserNotFoundException(id);
         }
         UserResponse response = UserResponse.from(user);
         return response;
@@ -49,7 +51,7 @@ public class UserService {
     public UserResponse patchUser(int id, UserPatchRequest request){
         User user = userRepository.findById(id).orElse(null);
         if(user == null){
-            return null;
+            throw new UserNotFoundException(id);
         }
         // Now lets update existing returned user
         // Get all the fields from request
@@ -59,7 +61,7 @@ public class UserService {
         // check if clint send 'name' as "" or "  "
         // because while creating 'user' the server is not allowing 'NULL' as well as these empty ("") & blank (" ") values. So update should follow that as well.
         if(name != null && name.isBlank()){
-            return null;
+            throw new InvalidUserDataException("Name cannot be empty or blank");
         }
         if(name != null){
             user.setName(name);
@@ -80,17 +82,19 @@ public class UserService {
     }
 
     @Transactional
-    public boolean deleteUser(int id){
-        /*  first fetch the user itself because delete() of JpaRepository can't delete directly using 'id'
-            correct JPA pattern and good safety check is to pass a 'managed entity' (which is 'User' here) to delete.
+    public void deleteUser(int id){
+        /*  first fetch the user itself using 'id'
+            One of the conservative JPA pattern and good safety check is to pass a 'managed entity' (which is 'User' here) to delete.
             The returned object 'user' via findUserById() is a managed entity
+
+            We can have used directly => userRepository.deleteById(id); as well.
+            If user is found and deleted then we are sending 204 and even if user is not found then also we are sending 204 "No content"
+            because the end result or expectation of client request is fulfilled in both cases.
          */
 
         User user = userRepository.findById(id).orElse(null);
-        if(user == null){
-            return false;
+        if( user!= null){
+            userRepository.delete(user);
         }
-        userRepository.delete(user);
-        return true;
     }
 }

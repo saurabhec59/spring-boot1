@@ -21,14 +21,14 @@ public class UserService {
         User user = new User();
         user.setName( request.getName() );
         user.setAge( request.getAge() );
-        User newUser = userRepository.createUser(user);
+        User newUser = userRepository.save( user ); // save is a generic method & spring data jpa will implement it internally.
 
         // sending this newly created user object to DTO
         return UserResponse.from(newUser);
     }
 
     public UserResponse findUserById(int id){
-        User user =  userRepository.findUserById(id);
+        User user =  userRepository.findById(id).orElse(null); // findById() is a generic method & spring data jpa will implement it internally.
         if(user == null){
             return null;
         }
@@ -37,11 +37,7 @@ public class UserService {
     }
 
     public List<UserResponse> findAllUsers(){
-        List<User> allUsers = userRepository.findAllUsers();
-        /*
-            No need to check null because em.createQuery().getResultList() returns an empty List even in case of if there are nothing to return
-            and does not return null.
-        */
+        List<User> allUsers = userRepository.findAll();
         List<UserResponse> response = new ArrayList<UserResponse>();
         for(User user : allUsers){
             response.add( UserResponse.from(user) );
@@ -51,7 +47,7 @@ public class UserService {
 
     @Transactional
     public UserResponse patchUser(int id, UserPatchRequest request){
-        User user = userRepository.findUserById(id);
+        User user = userRepository.findById(id).orElse(null);
         if(user == null){
             return null;
         }
@@ -62,11 +58,9 @@ public class UserService {
 
         // check if clint send 'name' as "" or "  "
         // because while creating 'user' the server is not allowing 'NULL' as well as these empty ("") & blank (" ") values. So update should follow that as well.
-        if(name.isBlank()){ // .isBlank() returns true for "" & " " as well
+        if(name != null && name.isBlank()){
             return null;
         }
-
-        // Update Existing user
         if(name != null){
             user.setName(name);
         }
@@ -79,7 +73,7 @@ public class UserService {
 
         /*
             @Transactional on the service method means this method runs inside a single JPA transaction.
-            Rhe returned User object 'user' is a managed entity for the duration of this transaction.
+            The returned User object 'user' is a managed entity for the duration of this transaction.
             Any setter call on a managed entity is tracked by Hibernate ("dirty checking"). When the transaction commits (i.e., when patchUser() returns successfully),
             Hibernate automatically compares the entity's current state to what it originally loaded and issues an UPDATE SQL only for the changed columns.
          */
@@ -87,16 +81,16 @@ public class UserService {
 
     @Transactional
     public boolean deleteUser(int id){
-        /*  first fetch the user itself because em.remove() can't delete directly using 'id'
-            correct JPA pattern and good safety check is to pass a 'managed entity' (which is 'User' here) to em.remove().
+        /*  first fetch the user itself because delete() of JpaRepository can't delete directly using 'id'
+            correct JPA pattern and good safety check is to pass a 'managed entity' (which is 'User' here) to delete.
             The returned object 'user' via findUserById() is a managed entity
          */
 
-        User user = userRepository.findUserById(id);
+        User user = userRepository.findById(id).orElse(null);
         if(user == null){
             return false;
         }
-        userRepository.deleteUser(user);
+        userRepository.delete(user);
         return true;
     }
 }

@@ -1,3 +1,5 @@
+/*
+
 package com.tl.spring_boot1.repository;
 
 import com.tl.spring_boot1.model.User;
@@ -31,5 +33,16 @@ public class UserRepository {
     public void deleteUser(User user){
         em.remove(user);
     }
+
+}
+
+
+ */
+package com.tl.spring_boot1.repository;
+
+import com.tl.spring_boot1.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
 
 }

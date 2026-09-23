@@ -1,7 +1,6 @@
 package com.tl.spring_boot1.controller;
 
 import com.tl.spring_boot1.dto.users.UserPatchRequest;
-import com.tl.spring_boot1.repository.UserRepository;
 import com.tl.spring_boot1.service.UserService;
 import com.tl.spring_boot1.dto.users.UserCreateRequest;
 import com.tl.spring_boot1.dto.users.UserResponse;

@@ -1,3 +1,5 @@
+/*
+
 package com.tl.spring_boot1.repository;
 
 import com.tl.spring_boot1.model.User;
@@ -5,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -21,5 +24,25 @@ public class UserRepository {
     public User findUserById(int id){
         return em.find(User.class, id);
     }
+
+    public List<User> findAllUsers(){
+        return em.createQuery("SELECT u FROM User u", User.class).getResultList(); // This will return a List<User>
+    }
+
+    @Transactional
+    public void deleteUser(User user){
+        em.remove(user);
+    }
+
+}
+
+
+ */
+package com.tl.spring_boot1.repository;
+
+import com.tl.spring_boot1.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
 
 }

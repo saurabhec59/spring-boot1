@@ -17,15 +17,21 @@ public class UserResponse {
     private Integer id;
     private String name;
     private Integer age;
+    private String email;
+    private String city;
+    private String role;
 
-    UserResponse(Integer id, String name, Integer age) {
+    UserResponse(Integer id, String name, Integer age,  String email, String city,  String role) {
         this.id = id;
         this.name = name;
         this.age = age;
+        this.email = email;
+        this.city = city;
+        this.role = role;
     }
 
     public static UserResponse from(User user){
-        return new UserResponse(user.getId(), user.getName(), user.getAge());
+        return new UserResponse(user.getId(), user.getName(), user.getAge(),  user.getEmail(), user.getCity(),  user.getRole());
     }
 
     // getters because at the end this 'UserResponse' object will be sent so jackson need to convert the fields of this into json format
@@ -40,4 +46,7 @@ public class UserResponse {
     public Integer getAge() {
         return age;
     }
+    public String getEmail() { return email; }
+    public String getCity() { return city; }
+    public String getRole() { return role; }
 }

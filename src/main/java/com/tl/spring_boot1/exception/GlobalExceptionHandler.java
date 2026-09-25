@@ -1,6 +1,7 @@
 package com.tl.spring_boot1.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.tl.spring_boot1.dto.ErrorResponse;
@@ -44,6 +45,21 @@ public class GlobalExceptionHandler {
         }
         ErrorResponse response = new ErrorResponse( currentTime, HttpStatus.BAD_REQUEST.value(), "Bad Request", "Validation failed", map,  request.getRequestURI() );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( response );
+
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e, HttpServletRequest request){
+        String currentTime = LocalDateTime.now().toString();
+
+        if(e.getMessage().contains("email") || e.getMessage().contains("users_email_unique")){
+            ErrorResponse response = new ErrorResponse( currentTime, HttpStatus.CONFLICT.value(), "Conflict", "Email already exists", request.getRequestURI() );
+            return ResponseEntity.status(HttpStatus.CONFLICT).body( response );
+        }
+        else{
+            ErrorResponse response = new ErrorResponse( currentTime, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error", "Database error",  request.getRequestURI() );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( response );
+        }
 
     }
 }

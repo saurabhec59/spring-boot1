@@ -1,5 +1,6 @@
 package com.tl.spring_boot1.service;
 
+import com.tl.spring_boot1.dto.users.UserPaginatedResponseDTO;
 import com.tl.spring_boot1.dto.users.UserPatchRequest;
 import com.tl.spring_boot1.exception.InvalidUserDataException;
 import com.tl.spring_boot1.exception.UserNotFoundException;
@@ -7,8 +8,14 @@ import com.tl.spring_boot1.model.User;
 import com.tl.spring_boot1.dto.users.UserCreateRequest;
 import com.tl.spring_boot1.repository.UserRepository;
 import com.tl.spring_boot1.dto.users.UserResponse;
+import com.tl.spring_boot1.util.UserQueryParamValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +26,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserQueryParamValidator userQueryParamValidator;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public UserResponse createUser( UserCreateRequest request){
         User user = new User();
         user.setName( request.getName() );
@@ -26,6 +39,14 @@ public class UserService {
         user.setEmail( request.getEmail() );
         user.setCity( request.getCity() );
         user.setRole("user"); // <==== setting the default role 'user' but any privilege like 'admin' can't be set by user itself while doing sign up. (This is prevented in user DTO)
+
+        // get entered password
+        final String password = request.getPassword();
+        // hashing the password
+        String hashedPassword = passwordEncoder.encode(password);
+        // setting the hashed password to user object (Not actual entered password String)
+        user.setPassword(hashedPassword);
+
         User newUser = userRepository.save( user ); // save is a generic method & spring data jpa will implement it internally.
 
         // sending this newly created user object to DTO
@@ -41,13 +62,25 @@ public class UserService {
         return response;
     }
 
-    public List<UserResponse> findAllUsers(){
-        List<User> allUsers = userRepository.findAll();
-        List<UserResponse> response = new ArrayList<UserResponse>();
-        for(User user : allUsers){
-            response.add( UserResponse.from(user) );
-        }
-        return response;
+    public UserPaginatedResponseDTO findAllUsers(Integer page, Integer limit, String sort, String order, String name, String email, String city, Integer minAge, Integer maxAge){
+        // validate remaining query params
+        userQueryParamValidator.validateSort(sort);
+        userQueryParamValidator.validateOrder(order);
+        userQueryParamValidator.validateCrossFieldAgeRange( minAge, maxAge);
+
+        // build Pageable for pagination and sorting
+        Sort.Direction direction = order.equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page-1, limit, Sort.by(direction, sort)); // because spring data jpa accepts 0 based index for pagination but preferred client request includes 1 based
+
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+
+//        List<User> allUsers = userRepository.findAll();
+//        List<UserResponse> response = new ArrayList<UserResponse>();
+//        for(User user : allUsers){
+//            response.add( UserResponse.from(user) );
+//        }
+        return UserPaginatedResponseDTO.from(usersPage);
     }
 
     @Transactional

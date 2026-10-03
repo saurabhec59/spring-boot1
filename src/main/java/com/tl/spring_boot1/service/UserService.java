@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class UserService {
     @Autowired
     private UserQueryParamValidator userQueryParamValidator;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public UserResponse createUser( UserCreateRequest request){
         User user = new User();
         user.setName( request.getName() );
@@ -35,6 +39,14 @@ public class UserService {
         user.setEmail( request.getEmail() );
         user.setCity( request.getCity() );
         user.setRole("user"); // <==== setting the default role 'user' but any privilege like 'admin' can't be set by user itself while doing sign up. (This is prevented in user DTO)
+
+        // get entered password
+        final String password = request.getPassword();
+        // hashing the password
+        String hashedPassword = passwordEncoder.encode(password);
+        // setting the hashed password to user object (Not actual entered password String)
+        user.setPassword(hashedPassword);
+
         User newUser = userRepository.save( user ); // save is a generic method & spring data jpa will implement it internally.
 
         // sending this newly created user object to DTO

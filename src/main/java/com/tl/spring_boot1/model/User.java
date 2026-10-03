@@ -19,6 +19,8 @@ public class User{
     @Column( unique = true,  nullable = false) // this is just a check & if the db column already exist without unique constraint then this will do nothing
     private String email;
     private String city;
+    @Column( nullable = false )
+    private String password;
     private String role;
 
     // getter & setters
@@ -28,6 +30,7 @@ public class User{
     public Integer getAge() { return age; }
     public String getEmail() { return email; }
     public String getCity() { return city; }
+    public String getPassword() { return password; }
     public String getRole() { return role; }
 
     public void setId(Integer id) { this.id = id; }
@@ -35,5 +38,6 @@ public class User{
     public void setAge(Integer age) { this.age = age; }
     public void setEmail(String email) { this.email = email; }
     public void setCity(String city) { this.city = city; }
+    public void setPassword(String password) { this.password = password; }
     public void setRole(String role) { this.role = role; }
 }

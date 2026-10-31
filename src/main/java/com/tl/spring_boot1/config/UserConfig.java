@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class UserConfig {
 
     @Autowired
@@ -40,6 +42,7 @@ public class UserConfig {
         httpSecurity.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()  // Login - public
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()       // Create user - public
+                .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")   // filter sets "ROLE_ADMIN"  but here we are checking only "ADMIN" because spring will append "ROLE_"
                 .anyRequest().authenticated()                                  // Everything else needs JWT
         );
 

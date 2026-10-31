@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+      - development
+
+  pull_request:
+    brances:
+      - main
+
+jobs:
+  buid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: setup java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: run maven build
+        run: ./mvnw clean install

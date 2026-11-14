@@ -24,6 +24,23 @@ jobs:
 
         ports:
           - 5432:5432
+
+        # Health check to ensure PostgreSQL is ready before running tests
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # Environment variables for Spring Boot tests
+    # These match the values expected by src/test/resources/application.properties
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET_KEY: dGVzdC1zZWNyZXQta2V5LWZvci1sb2NhbC1kZXZlbG9wbWVudC1vbmx5LWRvLW5vdC11c2UtaW4tcHJvZHVjdGlvbi10aGlzLWlzLWp1c3QtZm9yLWxlYXJuaW5n
+
     steps:
       - name: checkout repo
         uses: actions/checkout@v4

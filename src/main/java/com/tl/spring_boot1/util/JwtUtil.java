@@ -19,7 +19,7 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    @Value("${jwt.expiration.seconds}")
+    @Value("${jwt.access-token-expiration-seconds}")
     private Integer expirationSeconds;
 
     public String generateJwtToken(User user){

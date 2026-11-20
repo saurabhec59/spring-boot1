@@ -38,7 +38,7 @@ public class UserService {
         user.setAge( request.getAge() );
         user.setEmail( request.getEmail() );
         user.setCity( request.getCity() );
-        user.setRole("user"); // <==== setting the default role 'user' but any privilege like 'admin' can't be set by user itself while doing sign up. (This is prevented in user DTO)
+        user.setRole("USER"); // <==== setting the default role 'user' but any privilege like 'admin' can't be set by user itself while doing sign up. (This is prevented in user DTO)
 
         // get entered password
         final String password = request.getPassword();

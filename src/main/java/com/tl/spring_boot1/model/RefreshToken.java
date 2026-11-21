@@ -24,6 +24,10 @@ public class RefreshToken {
     @Column(name = "expires_at", nullable = false, updatable = false)
     private Instant expiresAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private RefreshTokenStatus status;
+
     // getters & setters
 
     public Integer getId() {return id;}
@@ -31,10 +35,12 @@ public class RefreshToken {
     public Integer getUserId() {return userId;}
     public Instant getCreatedAt() {return createdAt;}
     public Instant getExpiresAt() {return expiresAt;}
+    public RefreshTokenStatus getStatus() { return status;}
 
     public void setId(Integer id) {this.id = id;}
     public void setTokenHash(String tokenHash) {this.tokenHash = tokenHash;}
     public void setUserId(Integer userId) {this.userId = userId;}
     public void setCreatedAt(Instant createdAt) {this.createdAt = createdAt;}
     public void setExpiresAt(Instant expiresAt) {this.expiresAt = expiresAt;}
+    public void setStatus(RefreshTokenStatus status) {this.status = status;}
 }

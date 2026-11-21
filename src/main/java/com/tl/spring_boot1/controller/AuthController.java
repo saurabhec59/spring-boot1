@@ -1,8 +1,6 @@
 package com.tl.spring_boot1.controller;
 
-import com.tl.spring_boot1.dto.auth.LoginRequestDTO;
-import com.tl.spring_boot1.dto.auth.LoginResponseDTO;
-import com.tl.spring_boot1.dto.auth.LoginResponseRecord;
+import com.tl.spring_boot1.dto.auth.*;
 import com.tl.spring_boot1.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +35,28 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")
                 .body(responseRecord.loginResponseDTO());
+    }
+
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<RefreshResponseDTO> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken){
+        if(refreshToken == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        RefreshResponseRecord responseRecord = authService.refresh(refreshToken);
+
+        // build 'Set-Cookie' header
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", responseRecord.newRefreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/auth")
+                .maxAge(responseRecord.expiresIn())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .body(responseRecord.refreshResponseDTO());
     }
 }

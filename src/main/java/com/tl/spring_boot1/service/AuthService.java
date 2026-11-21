@@ -127,4 +127,18 @@ public class AuthService {
         // sending 'Record' containing 'RefreshResponseDTO' object and newRefreshToken and expiration of refresh token
         return new RefreshResponseRecord( RefreshResponseDTO.from(newAccessToken, "Bearer", jwtUtil.getExpirationTimeInSeconds()), newRefreshToken, refreshTokenExpirationSeconds );
     }
+
+    @Transactional
+    public void logout(String token){
+        if(token == null){ return; }
+        // hash the refresh token
+        String refreshTokenHash = refreshTokenUtil.generateRefreshTokenHash(token);
+        // see if token is present in db
+        RefreshToken stored = refreshTokenRepository.findByTokenHash(refreshTokenHash).orElse(null);
+        // if token is present and status is 'ACTIVE' then we will set it to 'REVOKED' otherwise in any cases no action is needed or error to be returned
+        // because final state of logout should be that make refresh token invalid
+        if(stored != null && stored.getStatus() == RefreshTokenStatus.ACTIVE){
+            stored.setStatus(RefreshTokenStatus.REVOKED); // since 'stored' is JPA managed entity, it will be updated in db automatically at the end of transaction
+        }
+    }
 }

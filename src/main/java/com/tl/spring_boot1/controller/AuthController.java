@@ -59,4 +59,24 @@ public class AuthController {
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")
                 .body(responseRecord.refreshResponseDTO());
     }
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<Void> logout(@CookieValue(name = "refresh_token", required = false) String refreshToken){
+        // even if client did not send refresh_token cookie then also we will send no error because logout is idempotent. That's why we
+        // do required = false, Also we will send no cookie and maxAge=0 to client so that client can delete the cookie from its side.
+        authService.logout(refreshToken);
+
+        // build 'Cookie' header so that client can delete the refresh_token from cookie
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/auth")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT) // 204 No Content
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .build();
+    }
 }

@@ -1,6 +1,7 @@
 package com.tl.spring_boot1.util;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -24,8 +25,17 @@ public class RefreshTokenUtil {
         secureRandom.nextBytes(bytes);
         return  Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
+    /*
+     a URL-safe base 64 encoded string contains only [a-z], [A-Z], [0-9], [-], [_] only. Nothing else
+      and getUrlEncoder() make sure that only these characters are there in encoded string.
+      withoutPadding() make sure that '=' padding characters are not there in encoded string.
+    */
 
     public String generateRefreshTokenHash(String refreshToken){
+        // Assert.hasText() provided by spring throws 'IllegalArgumentException' if string do not contain any actual text.
+        // and since in our GlobalException handler we are not handling directly this error or 'RuntimeException' so spring will
+        // send 500 internal error and this message will not be sent to client.
+        Assert.hasText(refreshToken, "Refresh token can't be null or empty");
         try{
             // convert String into bytes because Hashing algos works on bytes and returns bytes as well.
             // let's say if refresh token was "ABC" then below line will convert it into [65, 66, 67]

@@ -23,14 +23,15 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserQueryParamValidator userQueryParamValidator;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserQueryParamValidator userQueryParamValidator;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository,  UserQueryParamValidator userQueryParamValidator, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.userQueryParamValidator = userQueryParamValidator;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public UserResponse createUser( UserCreateRequest request){
         User user = new User();

@@ -21,6 +21,7 @@ public class User{
     private String city;
     @Column( nullable = false )
     private String password;
+    @Column( nullable = false )
     private String role;
 
     // getter & setters

@@ -23,14 +23,15 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserQueryParamValidator userQueryParamValidator;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserQueryParamValidator userQueryParamValidator;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository,  UserQueryParamValidator userQueryParamValidator, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.userQueryParamValidator = userQueryParamValidator;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public UserResponse createUser( UserCreateRequest request){
         User user = new User();
@@ -38,7 +39,7 @@ public class UserService {
         user.setAge( request.getAge() );
         user.setEmail( request.getEmail() );
         user.setCity( request.getCity() );
-        user.setRole("user"); // <==== setting the default role 'user' but any privilege like 'admin' can't be set by user itself while doing sign up. (This is prevented in user DTO)
+        user.setRole("USER"); // <==== setting the default role 'user' but any privilege like 'admin' can't be set by user itself while doing sign up. (This is prevented in user DTO)
 
         // get entered password
         final String password = request.getPassword();

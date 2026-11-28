@@ -16,11 +16,13 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret.key}")
-    private String secretKey;
+    private final String secretKey;
+    private final Integer expirationSeconds;
 
-    @Value("${jwt.expiration.seconds}")
-    private Integer expirationSeconds;
+    public JwtUtil( @Value("${jwt.secret.key}") String secretKey, @Value("${jwt.access-token-expiration-seconds}") Integer expirationSeconds) {
+        this.secretKey = secretKey;
+        this.expirationSeconds = expirationSeconds;
+    }
 
     public String generateJwtToken(User user){
         // Building payload

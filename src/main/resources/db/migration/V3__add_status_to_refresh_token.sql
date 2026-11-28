@@ -1,0 +1,3 @@
+ALTER TABLE refresh_tokens
+    ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE';
+

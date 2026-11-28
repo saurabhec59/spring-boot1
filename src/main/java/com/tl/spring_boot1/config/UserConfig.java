@@ -41,6 +41,8 @@ public class UserConfig {
         // Configure which endpoints need authentication
         httpSecurity.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()  // Login - public
+                .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll() // refresh access token - public
+                .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll() // logout - public
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()       // Create user - public
                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")   // filter sets "ROLE_ADMIN"  but here we are checking only "ADMIN" because spring will append "ROLE_"
                 .anyRequest().authenticated()                                  // Everything else needs JWT

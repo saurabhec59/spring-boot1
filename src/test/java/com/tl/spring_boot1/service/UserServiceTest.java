@@ -141,7 +141,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldReturnCorrectUserResponseAfterSuccessfullPatch(){
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -159,7 +159,7 @@ public class UserServiceTest {
     void patchUserShouldThrowExceptionWhenUserWithIdDoesNotExist(){
         when(userRepository.findById(1)).thenReturn(Optional.empty());
 
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().build();
 
         assertThrows(UserNotFoundException.class, () -> {
             userService.patchUser(1, request);
@@ -168,7 +168,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldThrowExceptionWhenNameIsEmpty(){ //""
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName("").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName("").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -180,7 +180,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldThrowExceptionWhenNameIsBlank(){ //" "
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName(" ").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName(" ").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -192,7 +192,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldThrowExceptionWhenEmailIsEmpty(){ //""
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withEmail("").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withEmail("").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -204,7 +204,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldThrowExceptionWhenEmailIsBlank(){ //" "
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withEmail(" ").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withEmail(" ").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -216,7 +216,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldNotUpdateWhenRequestFieldsAreNull(){
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName(null).withAge(null).withEmail(null).withCity(null).build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName(null).withAge(null).withEmail(null).withCity(null).build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -231,7 +231,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldAllowPartialUpdateNameOnly(){
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName("patched name").withAge(null).withEmail(null).withCity(null).build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName("patched name").withAge(null).withEmail(null).withCity(null).build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -246,7 +246,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldAllowPartialUpdateAgeOnly(){
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName(null).withAge(56).withEmail(null).withCity(null).build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName(null).withAge(56).withEmail(null).withCity(null).build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -261,7 +261,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldAllowPartialUpdateEmailOnly(){
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName(null).withAge(null).withEmail("patched@test.com").withCity(null).build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName(null).withAge(null).withEmail("patched@test.com").withCity(null).build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -276,7 +276,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldAllowPartialUpdateCityOnly(){
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withName(null).withAge(null).withEmail(null).withCity("patched city").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withName(null).withAge(null).withEmail(null).withCity("patched city").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -291,7 +291,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldAllowBlankCityUpdate(){// 'city' field is non-mandatory
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withCity("  ").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withCity("  ").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -303,7 +303,7 @@ public class UserServiceTest {
 
     @Test
     void patchUserShouldAllowEmptyCityUpdate(){ // 'city' field is non-mandatory
-        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequestBuilder().withCity("").build();
+        UserPatchRequest request = UserPatchRequestBuilder.aUserPatchRequest().withCity("").build();
         User user = UserMother.aUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));

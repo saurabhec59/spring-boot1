@@ -8,7 +8,7 @@ public class UserPatchRequestBuilder {
     private String email = "userpatched@test.com";
     private String city = "test city patched";
 
-    public static UserPatchRequestBuilder aUserPatchRequestBuilder(){
+    public static UserPatchRequestBuilder aUserPatchRequest(){
         UserPatchRequestBuilder userPatchRequestBuilder = new UserPatchRequestBuilder();
         return userPatchRequestBuilder;
     }
